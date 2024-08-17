@@ -27,6 +27,7 @@ void setup_case(const char* text, uint8_t* focused, uint8_t* up_pressed, uint8_t
     lcd_print(text);
     lcd_set_cursor(1, 0);
     lcd_print_int(*config_value, 10);
+	lcd_print(" ");
     if (*focused){
         if (*up_pressed){
             *config_value += 1;
@@ -41,44 +42,49 @@ void setup_mode(config_t* config, uint8_t* mode){
 	static uint8_t setup_position = 0;
 	static uint8_t focused = 0;
 
+	uint8_t up_pressed = button_up();
+	uint8_t down_pressed = button_down();
+	uint8_t servo_preview = switch_armed();
+
+	lcd_set_cursor(1, 15);
+	lcd_print((servo_preview) ? "A" : "D");
+	if (!servo_preview) {
+		set_speed(config->release_position_a, config->release_position_b);
+	}
+
 	if (button_ok()){
 		focused = !focused;
 		if (focused){
-			lcd_set_cursor(1, 15);
+			lcd_set_cursor(1, 14);
 			lcd_print("<");
 		}
 		else{
-			lcd_set_cursor(1, 15);
+			lcd_set_cursor(1, 14);
 			lcd_print(" ");
 		}
 		_delay_ms(200);
 	}
 	if (!focused){
-		if (button_up() && button_down() && !button_ok()){
+		if (up_pressed && down_pressed && !button_ok()){
 			setup_exit(mode, config, &focused);
 			return;
 		}
-		if (button_up()){
+		if (up_pressed){
 			setup_position = (setup_position + 1) % 16;
 			_delay_ms(200);
 			lcd_clear();
 		}
-		if (button_down()){
+		if (down_pressed){
 			setup_position = (setup_position + 15) % 16;
 			_delay_ms(200);
 			lcd_clear();
 		}
 	}
 
-	uint8_t up_pressed = button_up();
-	uint8_t down_pressed = button_down();
-
 	if (focused && (up_pressed || down_pressed)){
 		lcd_set_cursor(1, 0);
-		lcd_print("               ");
+		lcd_print("              ");
 	}
-	// TODO: ask if servo preview should be enabled
-    uint8_t servo_preview = true;
 
 	switch (setup_position){
         case 0:

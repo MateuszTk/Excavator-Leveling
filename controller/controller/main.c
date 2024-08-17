@@ -58,7 +58,6 @@ void process_sample(uint8_t data, const config_t* config, uint8_t* release_out, 
 	//static uint16_t uncertain_steps = 0;
 
 	static float target_speed_normalized = 0;
-
 	
 	if ((data >> 5) == 0b010){
 		if (data != prev_state){
@@ -213,12 +212,16 @@ int main(void){
 		}
 
 		if (mode == MODE_RUNNING){
+			uint8_t armed = switch_armed();
 			if (software_serial_available()){
 				uint8_t data = software_serial_read();
 				process_sample(data, &config, &release, &speed_normalized);
 				raw_sensor_data = data;
-			}	
+			}
 			
+			if (!armed){
+				release = true;
+			}
 			if (release){
 				set_speed(config.release_position_a, config.release_position_b);
 			}
@@ -235,14 +238,22 @@ int main(void){
 					lcd_print("-");
 				}
 			}
-			lcd_set_cursor(1, 0);
-			lcd_print("Pos: ");
-			if (release){
-				lcd_print("Release");
+			
+			if (armed){
+				lcd_set_cursor(1, 16 - 5);
+				lcd_print("Armed");
+				lcd_set_cursor(1, 0);
+				if (release){
+					lcd_print("Release ");
+				}
+				else{
+					lcd_print_float(speed_normalized);
+					lcd_print("      ");
+				}
 			}
 			else{
-				lcd_print_float(speed_normalized);
-				lcd_print("      ");
+				lcd_set_cursor(1, 0);
+				lcd_print("Disarmed        ");
 			}
 
 			if (button_up() && button_down() && !button_ok()){

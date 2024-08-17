@@ -18,6 +18,11 @@
 #define BUTTON_OK_PIN PIND
 #define BUTTON_OK PD6
 
+#define SWITCH_ARMED_DDR DDRD
+#define SWITCH_ARMED_PORT PORTD
+#define SWITCH_ARMED_PIN PIND
+#define SWITCH_ARMED PD7
+
 void buttons_init(){
     BUTTON_UP_DDR &= ~(1 << BUTTON_UP);
     BUTTON_UP_PORT |= (1 << BUTTON_UP);
@@ -27,6 +32,9 @@ void buttons_init(){
     
     BUTTON_OK_DDR &= ~(1 << BUTTON_OK);
     BUTTON_OK_PORT |= (1 << BUTTON_OK);
+
+    SWITCH_ARMED_DDR &= ~(1 << SWITCH_ARMED);
+    SWITCH_ARMED_PORT |= (1 << SWITCH_ARMED);
 }
 
 uint8_t button_up(){
@@ -39,6 +47,10 @@ uint8_t button_down(){
 
 uint8_t button_ok(){
     return !(BUTTON_OK_PIN & (1 << BUTTON_OK));
+}
+
+uint8_t switch_armed(){
+    return !(SWITCH_ARMED_PIN & (1 << SWITCH_ARMED));
 }
 
 #endif /* BUTTONS_H_ */
