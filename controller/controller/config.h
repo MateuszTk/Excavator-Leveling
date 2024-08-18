@@ -48,6 +48,10 @@ void config_print(config_t* config){
 	USART_print("\n");
 }
 
+void config_clear(){
+	EEPROM_write(CONFGIG_ADDR, 0);
+}
+
 void config_save(const config_t* config){
 	cli();
 	uint8_t* config_data = (uint8_t*)config;

@@ -17,8 +17,31 @@ void setup_exit(uint8_t* mode, config_t* config, uint8_t* focused){
     //config_save(config);
     lcd_clear();
     lcd_set_cursor(0, 0);
-    lcd_print("Exit");
-    _delay_ms(1000);
+    lcd_print("Save config?");
+	lcd_set_cursor(1, 1);
+	lcd_print("Yes");
+	lcd_set_cursor(1, 6);
+	lcd_print("No");
+	uint8_t save = false;
+    while (!button_ok()){
+		if (button_up()){
+			save = false;
+			lcd_set_cursor(1, 0);
+			lcd_print(" ");
+			lcd_set_cursor(1, 5);
+			lcd_print(">");
+		}	
+		if (button_down()){
+			save = true;
+			lcd_set_cursor(1, 0);
+			lcd_print(">");
+			lcd_set_cursor(1, 5);
+			lcd_print(" ");
+		}	
+	}
+	if (save){
+		config_save(config);
+	}
     lcd_clear();
 }
 
@@ -38,7 +61,7 @@ void setup_case(const char* text, uint8_t* focused, uint8_t* up_pressed, uint8_t
     }
 }
 
-void setup_mode(config_t* config, uint8_t* mode){
+void setup_mode(config_t* config, uint8_t* mode, const config_t* default_config){
 	static uint8_t setup_position = 0;
 	static uint8_t focused = 0;
 
@@ -70,12 +93,12 @@ void setup_mode(config_t* config, uint8_t* mode){
 			return;
 		}
 		if (up_pressed){
-			setup_position = (setup_position + 1) % 16;
+			setup_position = (setup_position + 1) % 17;
 			_delay_ms(200);
 			lcd_clear();
 		}
 		if (down_pressed){
-			setup_position = (setup_position + 15) % 16;
+			setup_position = (setup_position + 16) % 17;
 			_delay_ms(200);
 			lcd_clear();
 		}
@@ -142,12 +165,12 @@ void setup_mode(config_t* config, uint8_t* mode){
             break;
 
         case 11:
-            setup_case("12.release_position_a", &focused, &up_pressed, &down_pressed, &config->release_position_a);
+            setup_case("12.release_pos_a", &focused, &up_pressed, &down_pressed, &config->release_position_a);
             if (focused && servo_preview) set_speed(config->release_position_a, config->release_position_b);
             break;
 
         case 12:
-            setup_case("13.release_position_b", &focused, &up_pressed, &down_pressed, &config->release_position_b);
+            setup_case("13.release_pos_b", &focused, &up_pressed, &down_pressed, &config->release_position_b);
             if (focused && servo_preview) set_speed(config->release_position_a, config->release_position_b);
             break;
 
@@ -183,12 +206,24 @@ void setup_mode(config_t* config, uint8_t* mode){
 
 		case 15:
 			lcd_set_cursor(0, 0);
-			lcd_print("16.Exit");
+			lcd_print("16.Reset");
 			if (focused){
-				*mode = MODE_RUNNING;
 				focused = 0;
-				setup_position = 0;
-				lcd_clear();
+				config_clear();
+				*config = *default_config;
+				lcd_set_cursor(1, 0);
+				lcd_print("Done!");
+				_delay_ms(1000);
+				lcd_set_cursor(1, 0);
+				lcd_print("               ");
+			}
+			break;
+
+		case 16:
+			lcd_set_cursor(0, 0);
+			lcd_print("17.Exit");
+			if (focused){
+				setup_exit(mode, config, &focused);
 				return;
 			}
 			break;
