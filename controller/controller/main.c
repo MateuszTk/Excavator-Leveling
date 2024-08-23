@@ -166,7 +166,7 @@ void process_sample(uint8_t data, const config_t* config, uint8_t* release_out, 
 
 int main(void){
 	// default config
-	const config_t default_config = {
+	/*const config_t default_config = {
 		.valid_sample_timeout = 20,
 		.positions_a = {
 			45, 45/2, 0, -45/2, -45
@@ -178,6 +178,19 @@ int main(void){
 		.release_position_b = -45,
 		.step_up = 0.05f,
 		.step_down = 0.01f
+	};*/
+	const config_t default_config = {
+		.valid_sample_timeout = 20,
+		.positions_a = {
+			90, 90, 90, -45, -90
+		},
+		.positions_b = {
+			90, 45, -90, -90, -90
+		},
+		.release_position_a = 90,
+		.release_position_b = -90,
+		.step_up = 0.100f,
+		.step_down = 0.100f
 	};
 
 	config_t config = default_config;

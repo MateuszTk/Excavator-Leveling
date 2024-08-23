@@ -4,7 +4,7 @@
 #include <avr/io.h>
 #include <avr/delay.h>
 
-// (- - rs en d7 d6 d5 d4)
+/*// (- - rs en d7 d6 d5 d4)
 #define LCD_DDR DDRC
 #define LCD_PORT PORTC
 #define LCD_RS PC5
@@ -12,7 +12,17 @@
 #define LCD_D7 PC3
 #define LCD_D6 PC2
 #define LCD_D5 PC1
-#define LCD_D4 PC0
+#define LCD_D4 PC0*/
+
+// (- - d7 d6 d5 d4 en rs)
+#define LCD_DDR DDRC
+#define LCD_PORT PORTC
+#define LCD_RS PC0
+#define LCD_EN PC1
+#define LCD_D7 PC5
+#define LCD_D6 PC4
+#define LCD_D5 PC3
+#define LCD_D4 PC2
 
 #define LCD_MODE_CMD 0
 #define LCD_MODE_DATA 1
@@ -47,12 +57,12 @@ void lcd_init(){
 }
 
 void lcd_send(uint8_t data, uint8_t mode){
-    LCD_PORT = ((data & 0xF0) >> 4) | (mode << LCD_RS) | (1 << LCD_EN);
+    LCD_PORT = (((data & 0xF0) >> 4) << LCD_D4) | (mode << LCD_RS) | (1 << LCD_EN);
     _delay_us(1);
     LCD_PORT &= ~(1 << LCD_EN);
     _delay_us(1);
     
-    LCD_PORT = (data & 0x0F) | (mode << LCD_RS) | (1 << LCD_EN);
+    LCD_PORT = ((data & 0x0F) << LCD_D4) | (mode << LCD_RS) | (1 << LCD_EN);
     _delay_us(1);
     LCD_PORT &= ~(1 << LCD_EN);
     _delay_us(100);

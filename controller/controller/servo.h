@@ -14,7 +14,7 @@
 #define SERVO_2_PIN PB2
 
 #define SERVO_MIN 500
-#define SERVO_MAX 2400
+#define SERVO_MAX 2500
 
 void servo_init(){
     SERVO_1_DDR |= (1 << SERVO_1_PIN);
