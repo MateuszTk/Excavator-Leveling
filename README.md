@@ -5,7 +5,7 @@ Device designed to automate the leveling of the excavator. The device receives s
 
 ## Controller
 The controller is based on the Atmega328P microcontroller.
-The device has a 16x2 LCD display that allows the user to see the current offset from the middle position and the current state of the device. With the combination of the buttons, the user can change the settings of the device without the need to connect it to the computer.
+The device has a 16x2 LCD display that allows the user to see the current offset from the middle position and the current state of the device. With the use of the buttons, the user can change the settings of the device without the need to connect it to the computer.
 The device has a safety button that allows the user to switch between the manual "Disarmed" and automatic "Armed" mode.
 ![Device](images/the_device.jpg)
 
